@@ -121,7 +121,6 @@ class Coordinator:
         print("getRowByKey data=", rc)
 
 '''
-
 #  main
 readConfig()
 
@@ -173,5 +172,4 @@ c.sendToAll("reduce select dept, avg(salary), count(*) from tempdept  group by d
 c.sendToAll("drop table if exists tempdept ")
 
 c.close()
-
 '''
