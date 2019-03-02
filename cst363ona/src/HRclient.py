@@ -152,5 +152,5 @@ print("Loading employee table.  This will take a few minutes.")
 c.loadTable("employee", "employee.data")
 print("Loading department table")
 c.loadTable("department", "department.data")
-c.close()
+c.close()/
 '''
