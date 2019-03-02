@@ -1,6 +1,6 @@
 import socket, threading, sys, traceback
 import mysql.connector
-#
+
 #  to start a worker program, use the command
 #      python mpworker.py 8000
 #  where 8000 is the port number. 

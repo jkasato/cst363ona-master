@@ -7,6 +7,7 @@ hosts=[]
 ports=[]
 DEBUG = 1
 
+#This reads the config.txt
 def readConfig():
     global USERID, PASSWORD, hosts, ports, DEBUG 
     f = open("config.txt")
@@ -36,14 +37,15 @@ class Coordinator:
            if DEBUG >=2:
                 print("Connected to", hostname, port)
        
-    
+    #closes all worker connections
     def close(self):
         for sock in self.sockets:
            sock.close();
         self.sockets = []
         if DEBUG >= 2:
              print("All worker connections closed")
-    
+
+    #sends to all
     def sendToAll(self, stmt):
         for sock,port in zip(self.sockets,ports):
            self.send(sock, stmt)
@@ -64,7 +66,7 @@ class Coordinator:
                    index_next = status_msg.find(')',index)
                    print(status_msg[index+1:index_next])
                    index = index_next+1
-   
+    #recieves
     def recv(self,sock):
         buffer = b''
         while True:
@@ -76,7 +78,7 @@ class Coordinator:
             if buffer[-1]==0:
                 return buffer[0:-1].decode('utf-8')
             
-        
+    #sends
     def send(self, sock, msg):
         buffer = bytes(msg,'utf-8')+b'\x00'
         buflen = len(buffer)
@@ -93,7 +95,7 @@ class Coordinator:
     
     def loadTable(self, tableName, filename):
         # read file of data values which must be comma separated and in the same column order as the schema columns
-        # first column is the key (which must be integer) and is hashed to distributed the data across
+        # first column is the key (which must be integer) and is hashed to distribute the data across
         # worker nodes
         f = open(filename, 'r')
         for line in f:
@@ -107,8 +109,7 @@ class Coordinator:
             if DEBUG >= 1:
                  print("sent",sql,"received",rc)
         f.close()
-          
-    
+
     def getRowByKey(self, sql, key):
         index = hash(key)%len(ports)
         self.send(self.sockets[index], sql)
@@ -116,9 +117,9 @@ class Coordinator:
         print("getRowByKey data=", rc)
 
 
- 
-#  main 
 
+#  main 
+'''
 readConfig()
 
 # create test data and write to employee.data, department.data and manager.data
@@ -142,8 +143,6 @@ for empid in range(3000, 53000):
 file_emp.close()
 file_dept.close()
 
-   
-
 c = Coordinator()
 c.sendToAll("drop table if exists employee")
 c.sendToAll("drop table if exists department")
@@ -154,3 +153,4 @@ c.loadTable("employee", "employee.data")
 print("Loading department table")
 c.loadTable("department", "department.data")
 c.close()
+'''
