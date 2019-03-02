@@ -17,7 +17,7 @@ c = HRclient.Coordinator()
 #print("Loading department table")
 #c.loadTable("department", "department.data")
 '''
-
+'''
 #map-shuffle-reduce
 #   drop table if it exists
 c.sendToAll("drop table if exists tempdept ")
@@ -44,25 +44,19 @@ c.sendToAll("shuffle insert into tempdept  values {}")
 print("Reduce result set")
 #c.sendToAll("reduce select department, avg(salary), count(*) from tempdept  group by dept order by dept")
 c.sendToAll("reduce select dept, avg(salary), count(*) from tempdept  group by dept order by dept")
+'''
+#returns department id,manager name of department,number of employees in the department
+#map-shuffle-reduce
+c.sendToAll("drop table if exists tempdept ")#drop table if exists
+c.sendToAll("create table tempdept (dept int,name char(20))")#create table
+c.sendToAll("map select dept, name from emp ")#map
+c.sendToAll("shuffle insert into tempdept  values {}")#shuffle
+print("Reduce result set")
+c.sendToAll("reduce select dept, name char(20), count(*) from tempdept  group by dept order by dept")#reduce
 
-
-#returns department id
-
-
-#returns manager name of department
-
-
-#returns average salary of employees in department
-
-
-#returns min salary of employees in department
-
-
-#returns max salary of employees in department
-
-
-#returns number of employees in department
-
+#returns average salary of employees in department,
+#min salary of employees in department,
+#max salary of employees in department
 
 #close table
 c.close()
