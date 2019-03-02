@@ -1,5 +1,5 @@
 # HRclient.py
-import socket, random
+import socket,random
 
 USERID=''
 PASSWORD=''

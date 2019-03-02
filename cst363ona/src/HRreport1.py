@@ -42,21 +42,46 @@ c.sendToAll("shuffle insert into tempdept  values {}")
 
 #   reduce
 print("Reduce result set")
-#c.sendToAll("reduce select department, avg(salary), count(*) from tempdept  group by dept order by dept")
-c.sendToAll("reduce select dept, avg(salary), count(*) from tempdept  group by dept order by dept")
+#c.sendToAll("reduce select department, avg(salary), count(*) from tempdept group by dept order by dept")
+c.sendToAll("reduce select dept, avg(salary), count(*) from tempdept group by dept order by dept")
 '''
-#returns department id,manager name of department,number of employees in the department
-#map-shuffle-reduce
+# map-shuffle-reduce
+# returns department id,manager name of department
+'''
 c.sendToAll("drop table if exists tempdept ")#drop table if exists
 c.sendToAll("create table tempdept (dept int,name char(20))")#create table
-c.sendToAll("map select dept, name from emp ")#map
-c.sendToAll("shuffle insert into tempdept  values {}")#shuffle
-print("Reduce result set")
-c.sendToAll("reduce select dept, name char(20), count(*) from tempdept  group by dept order by dept")#reduce
-
-#returns average salary of employees in department,
-#min salary of employees in department,
-#max salary of employees in department
-
-#close table
+c.sendToAll("map select dept, name from employee")#map
+c.sendToAll("shuffle insert into tempdept values {}")#shuffle
+c.sendToAll("reduce select dept, name char(20), count(*) from tempdept group by dept order by dept")#reduce
+'''
+'''
+#number of employees in the department
+c.sendToAll("drop table if exists tempnum")#drop table if exists
+#c.sendToAll("create table tempnum (dept int,name char(20))")#create table
+c.sendToAll("create table tempnum (dept int,name char(20),salary double)")#create table
+#c.sendToAll("map select dept,name from employee")#map
+c.sendToAll("map select dept,name,salary from employee")#map
+c.sendToAll("shuffle insert into tempnum values {}")#shuffle
+#c.sendToAll("reduce select dept, name char(20), count(*) from tempdept group by dept order by dept")#reduce
+c.sendToAll("reduce select dept,name char(20), count(*) from tempdept group by dept order by dept")#reduce
+'''
+'''
+# returns average salary of employees in department,
+# min salary of employees in department,
+# max salary of employees in department
+c.sendToAll("drop table if exists tempsal")  # drop table if exists
+# c.sendToAll("create table tempnum (dept int,name char(20))")#create table
+c.sendToAll(
+    "create table tempsal (dept int,salary double,avgsal double, minsal double,maxsal double)")
+# c.sendToAll("map select dept,name from employee")#map
+#c.sendToAll("map select dept,salary,avg(salary),min(salary),max(salary) from employee")  # map
+c.sendToAll("map select dept,salary,salary,salary,salary  from employee")  # map
+c.sendToAll("shuffle insert into tempsal values {}")  # shuffle
+# c.sendToAll("reduce select dept, name char(20), count(*) from tempdept group by dept order by dept")#reduce
+c.sendToAll(
+    "reduce select dept,salary,round(avg(salary),2) as avgsal, min(salary), max(salary), count(*) "
+    #"from tempsal group by dept order by dept")  # reduce
+    "from tempsal group by dept order by dept asc")  # reduce
+'''
+# close table
 c.close()
